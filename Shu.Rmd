@@ -1,0 +1,41 @@
+---
+title: "Exercise03"
+author: "Shu FAN"
+date: "Wednesday, September 23, 2015"
+output: html_document
+---
+Part1:Where do you buy a house in Chicago?
+1) Read data and load chicago map.
+```{r}
+setwd("G:/EPM/2016_Automne/MTH6312/20150917/Exercise")
+library(ggplot2)
+library(ggmap)
+
+chicago<-read.csv("Crimes_2015.csv",header=T)
+chicago.new<-na.omit(chicago)
+map<-get_map(location="chicago",zoom=10,source = "google", maptype = "roadmap")
+```
+2) Take the subset of crimes commited in 2015 and plot a red dot (with enough transparency) for each theft appeared during 2015 until today on googlemap.
+```{r}
+theft<-subset(chicago.new,Primary.Type=="THEFT")
+ggmap(map)+geom_point(data=theft,aes(Longitude,Latitude),
+                      alpha=0.15,colour="red",size=0.5)+
+  xlim(min(chicago.new$Longitude),max(chicago.new$Longitude))+
+  ylim(min(chicago.new$Latitude),max(chicago.new$Latitude))
+```
+3) Plot the univariate density of thefts of 2015 over latitude.
+```{r}
+plot(density(theft$Latitude),xlab="Latitude",main=NA)
+```
+4) Compute the 2D density using kde2d function of library MASS and use persp function to provide a 3D plot.
+```{r}
+library(MASS)
+den2d<-kde2d(theft$Latitude,theft$Longitude,n=50)
+persp(den2d,theta=0,phi=50,xlab="Lat",ylab="Lon",zlab="density")
+```
+Part2:Smartphone-Based Recognition of Human Activities and Postural Transitions Data Set
+Data Set Information:
+(cited from:http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions)
+The experiments were carried out with a group of 30 volunteers within an age bracket of 19-48 years. They performed a protocol of activities composed of six basic activities: three static postures (standing, sitting, lying) and three dynamic activities (walking, walking downstairs and walking upstairs). The experiment also included postural transitions that occurred between the static postures. These are: stand-to-sit, sit-to-stand, sit-to-lie, lie-to-sit, stand-to-lie, and lie-to-stand. All the participants were wearing a smartphone (Samsung Galaxy S II) on the waist during the experiment execution. We captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz using the embedded accelerometer and gyroscope of the device. The experiments were video-recorded to label the data manually. The obtained dataset was randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. 
+
+The raw data were captured by a smartphone wearing on the waist, we have more and more smart equipements nowdays, especially the apple watch. If we could recognize human behaviour or activities accurately, this will highly facilitate our daily life.
